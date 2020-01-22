@@ -1,0 +1,85 @@
+<?php
+
+/**
+ * Loading Config variables.
+ *
+ * PHP version 7.0
+ *
+ * @category PHPMVC
+ * @package  PHPMVC_CSV2XML
+ * @author   Saurabh Verma <saurabh.verma@test.com>
+ * @license  Open Software License ("OSL")
+ * @link     https://www.php.net
+ */
+
+namespace App;
+
+/**
+ * Load Application configuration variables from app.ini file.
+ *
+ * @category PHPMVC
+ * @package  PHPMVC_CSV2XML
+ * @author   Saurabh Verma <saurabh.verma@test.com>
+ * @license  Open Software License ("OSL")
+ * @link     https://www.php.net
+ */
+class Config
+{
+
+    /**
+     * Config Instance
+     *
+     * @var Config
+     */
+    private static $_instance = null;
+
+    /**
+     * Config values
+     *
+     * @var array
+     */
+    private $_config;
+
+    /**
+     * Config constructor.
+     */
+    private function __construct()
+    {
+        $this->_config = parse_ini_file('config.ini');
+    }
+
+    /**
+     * Get a config item.
+     * 
+     * @param string $path Config Variable Name (can be like public.input_file_path).
+     *
+     * @return mixed
+     */
+    public static function get($path)
+    {
+        $config = null;
+        if (isset($path)) {
+            $paths = explode('.', $path);
+            $self = new self();
+            $configs = $self->_config; // $this->config
+
+            // Fuzzy logic to join the path related variables
+            // (e.g. public.input_file_path).
+            if (isset($configs[$paths[0]]) && isset($paths[1])) {
+                $config = $configs[$paths[0]] . $configs[$path];
+            } else {
+                $config = $configs[$paths[0]];
+            }
+        }
+        return $config;
+    }
+
+    /**
+     * Config destructor.
+     */
+    public function __destruct()
+    {
+        self::$_instance = null;
+    }
+}
+

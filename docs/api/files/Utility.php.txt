@@ -1,0 +1,121 @@
+<?php
+
+/**
+ * File containing the Utility functions.
+ *
+ * PHP version 7.0
+ *
+ * @category PHPMVC
+ * @package  PHPMVC_CSV2XML
+ * @author   Saurabh Verma <saurabh.verma@test.com>
+ * @license  Open Software License ("OSL")
+ * @link     https://www.php.net
+ */
+
+namespace App;
+
+/**
+ * Common Helper Functions to be used across application
+ *
+ * @category PHPMVC
+ * @package  PHPMVC_CSV2XML
+ * @author   Saurabh Verma <saurabh.verma@test.com>
+ * @license  Open Software License ("OSL")
+ * @link     https://www.php.net
+ */
+class Utility
+{
+
+    /**
+     * Get Diff of Dates.
+     *
+     * @param date $date1 Start Date
+     * @param date $date2 End Date
+     *
+     * @return int
+     */
+    public static function compareDates($date1, $date2)
+    {
+        // Use strtotime() function to convert date into dateTimestamp.
+        $dateTimestamp1 = strtotime($date1);
+        $dateTimestamp2 = strtotime($date2);
+
+        // Compare the timestamp date  
+        return ($dateTimestamp1 - $dateTimestamp2);
+    }
+
+    /**
+     * Read data from CSV file and return Array.
+     * 
+     * @param string  $csvFile   CSV File Path
+     * @param boolean $skipFirst Flag to skip first row (CSV header)
+     *
+     * @return array
+     */
+    public static function readCSV($csvFile, $skipFirst = true)
+    {
+        $arrCSVRow = [];
+        $fileHandle = fopen($csvFile, 'r');
+        while (!feof($fileHandle) ) {
+            $row = (array) fgetcsv($fileHandle, 1024, ",");
+            if (!empty($row[0])) {
+                $arrCSVRow[] = $row;
+            }
+        }
+        if ($skipFirst) {
+            array_shift($arrCSVRow);
+        }
+        fclose($fileHandle);
+        return $arrCSVRow;
+    }
+
+    /**
+     * Generate XMl file using array input data.
+     * 
+     * @param array  $arr         Input Data
+     * @param string $xmlFilePath Output XML File Path
+     * @param string $xmlHeader   XMl data header
+     *
+     * @return file
+     */
+    public static function arrayToXML($arr, $xmlFilePath = "sample_xml.xml",
+        $xmlHeader = "data"
+    ) {
+        $result = null;
+        try {
+            if (is_array($arr) && (!empty($arr))) {
+                // Check that the class exists before trying to use it.
+                // Note: XML file need to be created
+                //       before writing outout via XMLWriter().
+                if (is_file($xmlFilePath) && extension_loaded('xml')) {
+                    $xml = new \XMLWriter();
+                    
+                    $xml->openURI($xmlFilePath);
+                    $xml->startDocument('1.0', 'UTF-8');
+
+                    $xml->startElement($xmlHeader);
+
+                    foreach ($arr as $_arr) {
+                        $xml->startElement('node');
+                        foreach ($_arr as $_key => $val) {
+                            $xml->writeAttribute($_key, $val);
+                        }
+                        $xml->endElement();
+                    }
+
+                    $xml->endElement();
+
+                    $xml->flush();
+
+                    return true;
+                }
+            }
+        } catch (\Exception $e) {
+            return false;
+            // die("Error: " . $e->getMessage());
+        }
+        return $result;
+    }
+
+}
+

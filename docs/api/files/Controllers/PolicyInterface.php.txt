@@ -1,0 +1,45 @@
+<?php
+/**
+ * Controller file.
+ *
+ * PHP version 7.0
+ *
+ * @category PHPMVC
+ * @package  PHPMVC_CSV2XML
+ * @author   Saurabh Verma <saurabh.verma@test.com>
+ * @license  Open Software License ("OSL")
+ * @link     https://www.php.net
+ */
+
+namespace App\Controllers;
+
+/**
+ * Interface used to get Mgmt Fee and Calculate Maturity Amount
+ * for specific Policy class (via Polymorphism).
+ *
+ * @category PHPMVC
+ * @package  PHPMVC_CSV2XML
+ * @author   Saurabh Verma <saurabh.verma@test.com>
+ * @license  Open Software License ("OSL")
+ * @link     https://www.php.net
+ */
+interface PolicyInterface
+{
+    /**
+     * Helper function to deduce the Management Fee Percentage (3, 5 or 7%)
+     * and get the "Actual Management Fee value" based on set criterion.
+     *
+     * @return float
+     */
+    public function getMgmtFee();
+    
+    /**
+     * Helper function to calculate the maturity value of the Policy.
+     *
+     * @param array $inputData CSV Row data in Array format
+     *
+     * @return float
+     */
+    public function calcMaturity(array $inputData);
+}
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true">
+    <testsuites>
+        <testsuite name="unit">
+            <directory>./Test/Controllers/</directory>
+        </testsuite>
+    </testsuites>
+    
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./App</directory>
+        </whitelist>
+        <blacklist>
+            <directory suffix=".php">./vendor</directory>
+        </blacklist>
+    </filter>
+    <logging>
+	    <log type="coverage-html" target="coverage" lowUpperBound="50" highLowerBound="80" showUncoveredFiles="false"/>
+	</logging>
+</phpunit>
